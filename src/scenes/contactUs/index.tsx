@@ -34,7 +34,7 @@ const ContactUs = ({ setSelectedPage }: Props) => {
         emailId: e.target.email.value,
         message: e.target.message.value
       }
-      const {data, error} = await supabase.from('User').insert([formData]).select('*')
+      const { error} = await supabase.from('User').insert([formData]).select('*')
       if (error) {
         console.log(error);
       } else {
