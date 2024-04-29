@@ -3,6 +3,7 @@ import { SelectedPage } from "@/shared/types";
 import { motion } from "framer-motion";
 import ContactUsPageGraphic from "@/assets/ContactUsPageGraphic.png";
 import HText from "@/shared/HText";
+import supabase from "../supabase";
 
 type Props = {
   setSelectedPage: (value: SelectedPage) => void;
@@ -12,17 +13,37 @@ const ContactUs = ({ setSelectedPage }: Props) => {
   const inputStyles = `mb-5 w-full rounded-lg bg-primary-300
   px-5 py-3 placeholder-white`;
 
+  
+
   const {
     register,
     trigger,
     formState: { errors },
+    reset
   } = useForm();
 
   const onSubmit = async (e: any) => {
+    e.preventDefault();
     const isValid = await trigger();
     if (!isValid) {
-      e.preventDefault();
+      console.log('isValid', isValid);
     }
+    else {
+      const formData = {
+        name: e.target.name.value,
+        emailId: e.target.email.value,
+        message: e.target.message.value
+      }
+      const {data, error} = await supabase.from('User').insert([formData]).select('*')
+      if (error) {
+        console.log(error);
+      } else {
+        alert('Form submitted successfully!');
+        reset()
+      }
+      
+    }
+
   };
 
   return (
